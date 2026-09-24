@@ -16,8 +16,34 @@ services:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml:ro
       - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--alertmanager.notification-queue-capacity=100"
     ports:
       - "9091:9090"
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    ports:
+      - "9093:9093"
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+  discord-bridge:
+    image: benjojo/alertmanager-discord:latest
+    container_name: discord-bridge
+    environment:
+      DISCORD_WEBHOOK: ${DISCORD_WEBHOOK_URL}
+    ports:
+      - "9094:9094"
     networks:
       - devops-net
     restart: unless-stopped
