@@ -17,10 +17,10 @@ pipeline {
         stage('Test') {
             steps {
                 echo "Running automated tests..."
+                sh "cp -n env.sample .env"
                 sh "docker compose run --rm web python manage.py test tests"
             }
         }
-    }
 
     post {
         always {
