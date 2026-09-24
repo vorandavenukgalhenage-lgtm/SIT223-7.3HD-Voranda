@@ -1,3 +1,21 @@
-# Accepted risks go here, one CVE ID per line, each with a justification comment.
-# Example:
-# CVE-2024-XXXXX   # not reachable: package only used in build stage
+# ACCEPTED RISK: nltk 3.9.2 (transitive dependency of textblob 0.19.0)
+#
+# CVE-2025-14009  - zip-slip in the nltk corpus downloader
+# CVE-2026-78683  - unsafe pickle loading
+# CVE-2026-79657  - pickle loaders allow code execution when loading a malicious model/tokenizer file
+# CVE-2026-79675  - argument injection in nltk's Java tool wrappers
+#
+# Why not fixed: every patched nltk release (3.9.3+ and 3.10.x) requires Python >= 3.10.
+# This image uses Python 3.9, so pip cannot install a fixed version.
+#
+# Why the risk is low (verified in code): the app never imports nltk directly. The only use is
+# home/views.py: TextBlob(feedback_text).sentiment.polarity, which scores a plain string.
+# It never calls nltk.download(), never loads pickled nltk models or tokenizers, and never
+# uses the Java wrappers, so none of the vulnerable code paths are reachable.
+#
+# Mitigation and follow-up: no user-supplied files are deserialised. Planned fix is to upgrade
+# the base image to Python 3.12 and then bump nltk.
+CVE-2025-14009
+CVE-2026-78683
+CVE-2026-79657
+CVE-2026-79675

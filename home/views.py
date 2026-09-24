@@ -624,7 +624,7 @@ def login_with_otp(request):
 
         recaptcha_response = requests.post(
             'https://www.google.com/recaptcha/api/siteverify',
-            data={'secret': secret_key, 'response': token}
+            data={'secret': secret_key, 'response': token}, timeout=10
         )
 
         result = recaptcha_response.json()
@@ -1391,7 +1391,7 @@ def microsoft_login(request):
             'Content-Type': 'application/json'
         }
         
-        response = requests.get(graph_url, headers=headers)
+        response = requests.get(graph_url, headers=headers, timeout=10)
         if response.status_code != 200:
             return JsonResponse({'error': 'Invalid access token'}, status=401)
 
@@ -1583,7 +1583,7 @@ def microsoft_oauth_callback(request):
         }
         
         print(f"DEBUG: Requesting access token...")
-        token_response = requests.post(token_url, data=token_data)
+        token_response = requests.post(token_url, data=token_data, timeout=10)
         
         if token_response.status_code != 200:
             print(f"DEBUG: Token request failed - redirecting to dashboard anyway")
@@ -1601,7 +1601,7 @@ def microsoft_oauth_callback(request):
         headers = {'Authorization': f'Bearer {access_token}'}
         
         print(f"DEBUG: Requesting user info...")
-        user_response = requests.get(user_info_url, headers=headers)
+        user_response = requests.get(user_info_url, headers=headers, timeout=10)
         
         if user_response.status_code != 200:
             print(f"DEBUG: User info request failed - redirecting to dashboard anyway")
