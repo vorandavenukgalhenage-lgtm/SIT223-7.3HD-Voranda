@@ -7,8 +7,9 @@ services:
       DB_ENGINE: ""
       DEBUG: "True"
       APP_ENV: staging
-    command: >
-      sh -c "python manage.py migrate --noinput &&
+    command: "sh -c 'exit 1'" # TEMP: broken for rollback demo
+    _unused_command_for_demo: >
+      command: "sh -c 'echo Simulated failure && exit 1'"
              (python manage.py populate_database || true) &&
              (python manage.py collectstatic --noinput || true) &&
              gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 2"
