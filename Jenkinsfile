@@ -158,12 +158,13 @@ pipeline {
                         curl -fsS -o /dev/null -w "smoke test $p -> HTTP %{http_code}\n" -H "Host: localhost" http://hh-staging:8000$p
                       done
                       docker tag $DOCKER_IMAGE:$VERSION $DOCKER_IMAGE:staging-stable
+                      cp docker-compose.staging.yml /var/jenkins_home/staging-stable.compose.yml
                       echo "Staging healthy on version $VERSION"
                     else
                       echo "Staging health check FAILED - rolling back"
                       docker logs --tail 40 hh-staging || true
                       if [ -n "$STABLE" ]; then
-                        APP_TAG=staging-stable docker compose -p hh-staging -f docker-compose.staging.yml up -d --force-recreate
+                        APP_TAG=staging-stable docker compose --project-directory "$PWD" -p hh-staging -f /var/jenkins_home/staging-stable.compose.yml up -d --force-recreate
                         echo "Rolled back to previous stable image"
                       fi
                       exit 1
