@@ -1,0 +1,3 @@
+# Accepted risks go here, one CVE ID per line, each with a justification comment.
+# Example:
+# CVE-2024-XXXXX   # not reachable: package only used in build stage

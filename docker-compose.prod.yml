@@ -1,0 +1,24 @@
+services:
+  web:
+    image: hardhat-website:${APP_TAG}
+    container_name: hh-production
+    env_file: .env
+    environment:
+      DB_ENGINE: ""
+      DEBUG: "False"
+      APP_ENV: production
+      SECRET_KEY: ${PROD_SECRET_KEY:?PROD_SECRET_KEY not set}
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             (python manage.py populate_database || true) &&
+             (python manage.py collectstatic --noinput || true) &&
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    ports:
+      - "8002:8000"
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+networks:
+  devops-net:
+    external: true

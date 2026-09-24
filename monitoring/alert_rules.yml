@@ -1,0 +1,28 @@
+groups:
+  - name: app-alerts
+    rules:
+      - alert: AppDown
+        expr: probe_success == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.env }} application is DOWN"
+          description: "The HTTP probe for {{ $labels.instance }} has failed for 30 seconds."
+
+      - alert: SlowResponse
+        expr: probe_duration_seconds > 2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.env }} application is slow"
+          description: "Response time above 2s for {{ $labels.instance }}."
+
+      - alert: ServerError
+        expr: probe_http_status_code >= 500
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ $labels.env }} returning HTTP 5xx"

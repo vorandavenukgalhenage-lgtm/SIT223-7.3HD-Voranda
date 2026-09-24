@@ -38,3 +38,8 @@ media/
 # Large static assets
 custom_static/assets/videos/
 custom_static/assets/img/
+.env
+coverage.xml
+trivy-report.txt
+bandit-report.txt
+build-info.txt

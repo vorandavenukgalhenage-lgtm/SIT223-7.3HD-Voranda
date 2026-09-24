@@ -1,0 +1,23 @@
+services:
+  web:
+    image: hardhat-website:${APP_TAG}
+    container_name: hh-staging
+    env_file: .env
+    environment:
+      DB_ENGINE: ""
+      DEBUG: "True"
+      APP_ENV: staging
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             (python manage.py populate_database || true) &&
+             (python manage.py collectstatic --noinput || true) &&
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+    ports:
+      - "8001:8000"
+    networks:
+      - devops-net
+    restart: unless-stopped
+
+networks:
+  devops-net:
+    external: true
