@@ -1,21 +1,76 @@
 # ACCEPTED RISK: nltk 3.9.2 (transitive dependency of textblob 0.19.0)
 #
-# CVE-2025-14009  - zip-slip in the nltk corpus downloader
-# CVE-2026-78683  - unsafe pickle loading
-# CVE-2026-79657  - pickle loaders allow code execution when loading a malicious model/tokenizer file
-# CVE-2026-79675  - argument injection in nltk's Java tool wrappers
+# CVE-2025-14009, CVE-2026-78683, CVE-2026-79657, CVE-2026-79675, and related path-traversal /
+# file-read / pickle-deserialization / ReDoS CVEs in nltk's corpus loaders, downloader and Java wrappers.
 #
 # Why not fixed: every patched nltk release (3.9.3+ and 3.10.x) requires Python >= 3.10.
 # This image uses Python 3.9, so pip cannot install a fixed version.
 #
 # Why the risk is low (verified in code): the app never imports nltk directly. The only use is
 # home/views.py: TextBlob(feedback_text).sentiment.polarity, which scores a plain string.
-# It never calls nltk.download(), never loads pickled nltk models or tokenizers, and never
-# uses the Java wrappers, so none of the vulnerable code paths are reachable.
+# It never calls nltk.download(), never loads pickled nltk models/tokenizers, never parses nltk
+# corpora or XML, and never uses the Java wrappers, so none of the vulnerable code paths run.
 #
-# Mitigation and follow-up: no user-supplied files are deserialised. Planned fix is to upgrade
-# the base image to Python 3.12 and then bump nltk.
+# Mitigation and follow-up: upgrade the base image to Python 3.12, then bump nltk.
 CVE-2025-14009
+CVE-2026-0846
+CVE-2026-0847
+CVE-2026-12061
+CVE-2026-12072
+CVE-2026-12074
+CVE-2026-12075
+CVE-2026-33231
+CVE-2026-33236
+CVE-2026-54293
+CVE-2026-62385
+CVE-2026-62388
+CVE-2026-63312
+CVE-2026-70626
+CVE-2026-72818
+CVE-2026-78680
+CVE-2026-78681
+CVE-2026-78682
 CVE-2026-78683
 CVE-2026-79657
+CVE-2026-79674
 CVE-2026-79675
+CVE-2026-79676
+CVE-2026-80205
+CVE-2026-80206
+CVE-2026-81726
+
+# ACCEPTED RISK: pillow 11.3.0 (image processing for avatars, team images, resource covers)
+#
+# Why not fixed: pillow 12.x, which fixes these, requires Python >= 3.10. This image uses
+# Python 3.9, so pip cannot install a fixed version.
+#
+# Reachability: the app DOES process user-uploaded images (ImageField on avatars, team images,
+# resource covers, plus imagekit and image_optimizer.py). This surface is reachable, so this
+# is a genuine accepted risk, not a false positive.
+#
+# Mitigation and follow-up: upgrade the base image to Python 3.12, then bump pillow to 12.x.
+# In the meantime, uploads are restricted to expected image types at the form/model level.
+CVE-2026-25990
+CVE-2026-40192
+CVE-2026-42311
+CVE-2026-54058
+CVE-2026-54059
+CVE-2026-54060
+CVE-2026-55379
+CVE-2026-55380
+CVE-2026-59197
+CVE-2026-59199
+CVE-2026-59200
+CVE-2026-59204
+CVE-2026-59205
+
+# ACCEPTED RISK: sqlparse 0.5.3 and urllib3 2.6.3 (Django/requests dependencies)
+#
+# Why not fixed: sqlparse 0.6.0 and urllib3 2.7.0 both require Python >= 3.10.
+# Both CVE sets are Denial-of-Service (CPU/response decompression), not code execution or
+# data exposure. Mitigation and follow-up: upgrade the base image to Python 3.12.
+CVE-2026-54284
+CVE-2026-59893
+CVE-2026-71491
+CVE-2026-44431
+CVE-2026-44432
