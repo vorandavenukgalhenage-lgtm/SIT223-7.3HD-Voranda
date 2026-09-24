@@ -228,6 +228,7 @@ EOF
                 echo "Checking production health and alerts in Prometheus"
                 sh '''
                     curl -fsS http://prometheus:9090/-/ready
+                    curl -fsS http://alertmanager:9093/-/ready
 
                     OK=0
                     for i in $(seq 1 12); do
