@@ -7,7 +7,11 @@ services:
       DB_ENGINE: ""
       DEBUG: "True"
       APP_ENV: staging
-    command: "sh -c 'echo SIMULATED FAILURE FOR ROLLBACK DEMO && exit 1'"
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             (python manage.py populate_database || true) &&
+             (python manage.py collectstatic --noinput || true) &&
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 2"
     ports:
       - "8001:8000"
     networks:
