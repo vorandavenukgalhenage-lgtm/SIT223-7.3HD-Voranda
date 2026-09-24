@@ -8,9 +8,11 @@ services:
       DEBUG: "False"
       APP_ENV: production
       SECRET_KEY: ${PROD_SECRET_KEY:?PROD_SECRET_KEY not set}
+      ADMIN_PASSWORD: ${PROD_ADMIN_PASSWORD:?PROD_ADMIN_PASSWORD not set}
     command: >
       sh -c "python manage.py migrate --noinput &&
              (python manage.py populate_database || true) &&
+             (python manage.py shell < deploy/set_admin_password.py || true) &&
              (python manage.py collectstatic --noinput || true) &&
              gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     ports:

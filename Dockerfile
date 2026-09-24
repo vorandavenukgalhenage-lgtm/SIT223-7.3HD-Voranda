@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir \
     django-extensions
 
 # Create necessary directories first
-RUN mkdir -p /app/static /app/media
+RUN pip install --no-cache-dir --upgrade wheel && mkdir -p /app/static /app/media
 
 # Database population is handled by Django management command in docker-compose
 

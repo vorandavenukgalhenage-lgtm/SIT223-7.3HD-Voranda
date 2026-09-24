@@ -1,4 +1,4 @@
-﻿import uuid
+import uuid
 import os
 
 from django.db import models
@@ -33,6 +33,7 @@ from django.utils.text import slugify
 
 import secrets
 import random
+import secrets
 import string
 
 from .mixins import AbstractBaseSet, CustomUserManager
@@ -906,7 +907,7 @@ class Passkey(models.Model):
     @staticmethod
     def generate_passkey():
         """Generate a new passkey"""
-        return ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+        return ''.join([secrets.choice(string.ascii_letters + string.digits) for _ in range(12)])
 
 class AppAttackReport(models.Model):
     year = models.PositiveIntegerField()

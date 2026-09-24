@@ -63,6 +63,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse_lazy
 # from Website.settings import EMAIL_HOST_USER
 import random
+import secrets
 from .forms import UserUpdateForm, ProfileUpdateForm, ExperienceForm, JobApplicationForm, UserBlogPageForm, ChallengeForm, VaultUploadForm
 
 from .forms import CaptchaForm
@@ -647,7 +648,7 @@ def login_with_otp(request):
         user = authenticate(request, username=username, password=password)
 
         if user:
-            otp = random.randint(100000, 999999)
+            otp = (secrets.randbelow(900000) + 100000)
             request.session['otp'] = otp
             request.session['user_id'] = user.id
             request.session['otp_timestamp'] = time.time()  #Set time
@@ -1170,7 +1171,7 @@ def reset_passkeys_request(request):
             return redirect("reset_passkeys_request")
 
         # Generate and send OTP
-        otp = random.randint(100000, 999999)
+        otp = (secrets.randbelow(900000) + 100000)
         request.session["reset_passkeys_otp"] = otp
         request.session["reset_passkeys_user_id"] = user.id
 
@@ -1211,7 +1212,7 @@ def reset_passkeys_verify(request):
         Passkey.objects.filter(user=user).delete()
 
         # Generate 5 new passkeys
-        new_passkeys = ["".join(random.choices(string.ascii_letters + string.digits, k=12)) for _ in range(5)]
+        new_passkeys = ["".join([secrets.choice(string.ascii_letters + string.digits) for _ in range(12)]) for _ in range(5)]
         for key in new_passkeys:
             Passkey.objects.create(user=user, key=key)
 
@@ -1296,7 +1297,7 @@ def register(request):
                 print("User saved to database.")  # Success log
 
                 # Generate OTP and send email
-                otp = random.randint(100000, 999999)
+                otp = (secrets.randbelow(900000) + 100000)
                 email = form.cleaned_data.get('email')
                 send_mail(
                     subject="User Data",
@@ -3326,7 +3327,7 @@ class EmailNotificationViewSet(ViewSet):
         
         # In a real implementation, you would send the actual email here
         # For now, we'll just return a success response
-        notification_id = f"notif_{random.randint(100000, 999999)}"
+        notification_id = f"notif_{(secrets.randbelow(900000) + 100000)}"
         
         return Response({
             "message": "Email sent successfully!",

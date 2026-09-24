@@ -177,6 +177,7 @@ pipeline {
                 echo "Promoting ${VERSION} to PRODUCTION"
                 withCredentials([
                     string(credentialsId: 'prod-secret-key', variable: 'PROD_SECRET_KEY'),
+                    string(credentialsId: 'prod-admin-password', variable: 'PROD_ADMIN_PASSWORD'),
                     usernamePassword(credentialsId: 'github-pat', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')
                 ]) {
                     sh '''
