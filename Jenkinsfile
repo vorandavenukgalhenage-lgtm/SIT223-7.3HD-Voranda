@@ -16,9 +16,9 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo "Running automated tests..."
+                echo "Running automated tests inside the built image..."
                 sh "cp -n env.sample .env"
-                sh "docker compose run --rm web python manage.py test tests"
+                sh "docker run --rm --env-file .env -e DB_ENGINE= ${DOCKER_IMAGE}:${VERSION} python manage.py test tests"
             }
         }
     }
