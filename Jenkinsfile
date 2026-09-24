@@ -21,6 +21,7 @@ pipeline {
                 sh "docker compose run --rm web python manage.py test tests"
             }
         }
+    }
 
     post {
         always {
